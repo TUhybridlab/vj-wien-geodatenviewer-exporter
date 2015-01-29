@@ -11,6 +11,8 @@ mkdir -p textures
 mkdir -p out
 
 COORDINATES=`python convert_coordinates.py`
+SIZE=`python get_size.py`
+TEXTURE_SCALE_FACTOR="5%"
 
 ## Download files
 cd zips
@@ -35,9 +37,31 @@ done
 
 # Back
 cd ..
+function scaleComposeTextures() {
+	## Scale down 
+	cd textures
+	echo "## Scale down orthophoto"
+	PATCHES=""
+	for i in $COORDINATES
+	do
+		if [ -f $i"_scaled.jpg" ]
+		then
+			echo $i": scaling texture already there, not scaling."
+		else
+			echo $i": scaling down."
+			convert -limit thread 2 $i"_op.jpg" -scale $TEXTURE_SCALE_FACTOR $i"_scaled.jpg"
+		fi
+		PATCHES=$PATCHES" "$i"_scaled.jpg"
+	done
+	cd ..
 
-# Compose texures
-./compose_scaled_textures.sh
+	## Compose
+	cd textures
+	echo "## Compose texture (i.e. orthofoto)"
+	echo $PATCHES
+	montage $PATCHES -geometry +0+0 -tile $SIZEx$SIZE ../out/texture_scaled.jpg
+	cd ..
+}
 
 function convertTiff2Raw {
 	## Convert to RAW format
@@ -54,6 +78,8 @@ function convertTiff2Raw {
 	gdal_translate -ot UInt16 -of ENVI -outsize 2049 2049 -scale multipatch_final.tiff heightmap_1.raw
 	cd ..
 }
+
+scaleComposeTextures
 
 ## Convert and compose meshes
 echo "## Converting and composing mesh"
