@@ -2,10 +2,11 @@
 
 ## Parameters
 export INTERMEDIATE_GRAPHICS_FORMAT="tiff"
-# Python generated parameters.
+
+## Python generated parameters.
 #  See the files for the respective values
-COORDINATES=`python convert_coordinates.py`
-SIZE=`python get_size.py`
+export COORDINATES=`python convert_coordinates.py`
+export SIZE=`python get_size.py`
 
 
 ## Download files
@@ -94,6 +95,8 @@ function convertTiff2Raw {
 }
 
 ## Main
+if [[ $0 != "bash" ]]
+then
 	# Clean up
 	rm -rf out
 
@@ -103,14 +106,15 @@ function convertTiff2Raw {
 	mkdir -p textures
 	mkdir -p out
 
-downloadFiles
+	downloadFiles
 
-unzipFiles
+	unzipFiles
 
-scaleComposeTextures
+	scaleComposeTextures
 
-## Convert and compose meshes
-echo "## Converting and composing mesh"
-./convert_asc2tiff.py
+	## Convert and compose meshes
+	echo "## Converting and composing mesh"
+	./convert_asc2tiff.py
 
-convertTiff2Raw
+	convertTiff2Raw
+fi
