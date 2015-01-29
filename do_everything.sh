@@ -1,18 +1,21 @@
 #!/bin/bash
 
-# Clean up
-#!/bin/bash
+# Python generated parameters.
+#  See the files for the respective values
+COORDINATES=`python convert_coordinates.py`
+SIZE=`python get_size.py`
 
+# TODO: Calculate to have same as RAW
+TEXTURE_SCALE_FACTOR="5%"
+
+# Clean up
 rm -rf out
 
+# Create directories
 mkdir -p zips
 mkdir -p asc
 mkdir -p textures
 mkdir -p out
-
-COORDINATES=`python convert_coordinates.py`
-SIZE=`python get_size.py`
-TEXTURE_SCALE_FACTOR="5%"
 
 ## Download files
 function downloadFiles() {
