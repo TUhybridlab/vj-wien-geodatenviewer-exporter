@@ -86,15 +86,13 @@ function convertTiff2Raw {
 	## Convert to RAW format
 	cd out
 	echo "## Convert to RAW (experimental)"
-	# Mirror over y = -x axis (not sure why, unitiy seems to do that as well)
-	# num 1
-	convert multipatch.tiff -rotate 45 -flip -rotate -45 -gravity Center -page +0+0 multipatch_mirrored.tiff
-	#nmum 2
-	#convert multipatch.tiff -rotate -45 -flip -rotate 45 -gravity Center -page +0+0 multipatch_mirrored.tiff
 
-	convert multipatch_mirrored.tiff -gravity center -crop 2049x2049+0+0 multipatch_final.tiff
-	# Credits: https://alastaira.wordpress.com/2013/11/12/importing-dem-terrain-heightmaps-for-unity-using-gdal/
-	gdal_translate -ot UInt16 -of ENVI -outsize 2049 2049 -scale multipatch_final.tiff heightmap_1.raw
+	# Not sure why, but for some reason needed
+	convert multipatch.tiff -flip multipatch_final.tiff
+
+	# Convert TIFF to RAW heightmap
+	#     Credits: https://alastaira.wordpress.com/2013/11/12/importing-dem-terrain-heightmaps-for-unity-using-gdal/
+	gdal_translate -ot UInt16 -of ENVI -outsize 2049 2049 -scale multipatch_final.tiff heightmap.raw
 	cd ..
 }
 
