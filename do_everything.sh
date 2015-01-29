@@ -8,14 +8,7 @@ SIZE=`python get_size.py`
 # TODO: Calculate to have same as RAW
 TEXTURE_SCALE_FACTOR="5%"
 
-# Clean up
-rm -rf out
 
-# Create directories
-mkdir -p zips
-mkdir -p asc
-mkdir -p textures
-mkdir -p out
 
 ## Download files
 function downloadFiles() {
@@ -100,6 +93,14 @@ function convertTiff2Raw {
 }
 
 ## Main
+	# Clean up
+	rm -rf out
+
+	# Create directories
+	mkdir -p zips
+	mkdir -p asc
+	mkdir -p textures
+	mkdir -p out
 
 downloadFiles
 
