@@ -15,28 +15,47 @@ SIZE=`python get_size.py`
 TEXTURE_SCALE_FACTOR="5%"
 
 ## Download files
-cd zips
-for i in $COORDINATES
-do
-	# Download ASC file
-	downloadPath="https://www.wien.gv.at/ma41datenviewer/downloads/ma41/geodaten/dom_asc/"$i"_dom.zip"
-	wget -nc $downloadPath
+function downloadFiles() {
+	cd zips
+	echo "## Download"
+	for i in $COORDINATES
+	do
+		# Download ASC file
+		downloadPath="https://www.wien.gv.at/ma41datenviewer/downloads/ma41/geodaten/dom_asc/"$i"_dom.zip"
+		wget -nc $downloadPath
 
-	# Download orthophoto
-	downloadPath="https://www.wien.gv.at/ma41datenviewer/downloads/ma41/geodaten/op_img/"$i"_op.zip"
-	wget -nc $downloadPath
-done
+		# Download orthophoto
+		downloadPath="https://www.wien.gv.at/ma41datenviewer/downloads/ma41/geodaten/op_img/"$i"_op.zip"
+		wget -nc $downloadPath
+	done
+	cd ..
+}
 
-# Unzip
-## TOOD: Only if needed
-for i in $COORDINATES
-do
-	unzip -o -d ../textures $i"_op.zip"
-	unzip -o -d ../asc $i"_dom.zip"
-done
+# Unzip only if needed
+function unzipFiles() {
+	cd zips
+	echo "## Unzip"
+	for i in $COORDINATES
+	do
+		#Textures
+		if [ -f "../textures/"$i"_op.jpg" ]
+		then
+			echo $i": texture already there, not unzipping."
+		else
+			unzip -o -d ../textures $i"_op.zip"
+		fi
 
-# Back
-cd ..
+		#Oberflaechenmodell
+		if [ -f "../asc/"$i"_DOM.asc" ]
+		then
+			echo $i": \"oberflaechenmodell\" already there, not unzipping."
+		else
+			unzip -o -d ../asc $i"_dom.zip"
+		fi
+	done
+	cd ..
+}
+
 function scaleComposeTextures() {
 	## Scale down 
 	cd textures
@@ -78,6 +97,12 @@ function convertTiff2Raw {
 	gdal_translate -ot UInt16 -of ENVI -outsize 2049 2049 -scale multipatch_final.tiff heightmap_1.raw
 	cd ..
 }
+
+## Main
+
+downloadFiles
+
+unzipFiles
 
 scaleComposeTextures
 
