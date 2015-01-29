@@ -55,4 +55,8 @@ function convertTiff2Raw {
 	cd ..
 }
 
+## Convert and compose meshes
+echo "## Converting and composing mesh"
+python convert_asc.py
+
 convertTiff2Raw
