@@ -7,10 +7,6 @@ export INTERMEDIATE_GRAPHICS_FORMAT="tiff"
 COORDINATES=`python convert_coordinates.py`
 SIZE=`python get_size.py`
 
-# TODO: Calculate to have same as RAW
-TEXTURE_SCALE_FACTOR="5%"
-
-
 
 ## Download files
 function downloadFiles() {
@@ -59,16 +55,18 @@ function scaleComposeTextures() {
 	cd textures
 	echo "## Scale down orthophoto"
 	PATCHES=""
+
 	for i in $COORDINATES
 	do
-		if [ -f $i"_scaled.jpg" ]
+		SCALED_IMAGE_NAME=$i"_scaled."$INTERMEDIATE_GRAPHICS_FORMAT
+		if [ -f $SCALED_IMAGE_NAME ]
 		then
 			echo $i": scaling texture already there, not scaling."
 		else
 			echo $i": scaling down."
-			convert -limit thread 2 $i"_op.jpg" -scale $TEXTURE_SCALE_FACTOR $i"_scaled.jpg"
+			convert -limit thread 2 $i"_op.jpg" -resize 2048x2048 $SCALED_IMAGE_NAME
 		fi
-		PATCHES=$PATCHES" "$i"_scaled.jpg"
+		PATCHES=$PATCHES" "$SCALED_IMAGE_NAME
 	done
 	cd ..
 
@@ -76,7 +74,8 @@ function scaleComposeTextures() {
 	cd textures
 	echo "## Compose texture (i.e. orthofoto)"
 	echo $PATCHES
-	montage $PATCHES -geometry +0+0 -tile $SIZEx$SIZE ../out/texture_scaled.jpg
+	montage $PATCHES -geometry +0+0 -tile $SIZEx$SIZE ./texture_composed.$INTERMEDIATE_GRAPHICS_FORMAT
+	convert ./texture_composed.$INTERMEDIATE_GRAPHICS_FORMAT -resize 2048x2048 ../out/texture_scaled.tiff
 	cd ..
 }
 
