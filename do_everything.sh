@@ -108,6 +108,6 @@ scaleComposeTextures
 
 ## Convert and compose meshes
 echo "## Converting and composing mesh"
-python convert_asc.py
+./convert_asc2tiff.py
 
 convertTiff2Raw
