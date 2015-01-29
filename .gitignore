@@ -1,3 +1,13 @@
+# Output data
+asc/*
+out/*
+textures/*
+zips/*
+
+####
+## Default Python from GitHub (until end)
+####
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -52,3 +62,7 @@ docs/_build/
 
 # PyBuilder
 target/
+
+###
+## Add stuff on top, not here!
+###
