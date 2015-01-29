@@ -52,7 +52,7 @@ def renderLayers(size, layers, imageFileName):
 	p.end()
 	print "    ...Done"
 
-	print "save()"
+	print "save("+ imageFileName + ")"
 	# save image
 	img.save(imageFileName)
 	print "    ...Done"
@@ -65,6 +65,8 @@ def load_layers():
 			getLayer(ascFolder + fileName, fileName)
 
 if __name__ == "__main__":
+
+	outputImageName="multipatch." + str(os.environ['INTERMEDIATE_GRAPHICS_FORMAT'])
 
 	print "initQgis"
 	qgishome = "/usr"
@@ -82,7 +84,7 @@ if __name__ == "__main__":
 	print "    ...Done"
 
 	# Render all loaded layers (works with project files to)
-	renderLayers(QSize(2049,2049), QgsMapLayerRegistry.instance().mapLayers(), "./out/multipatch.tiff")
+	renderLayers(QSize(2049,2049), QgsMapLayerRegistry.instance().mapLayers(), "./out/"+outputImageName)
 
 	print "exit"
 	QgsApplication.exitQgis()
