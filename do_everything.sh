@@ -1,5 +1,7 @@
 #!/bin/bash
 
+## Parameters
+export INTERMEDIATE_GRAPHICS_FORMAT="tiff"
 # Python generated parameters.
 #  See the files for the respective values
 COORDINATES=`python convert_coordinates.py`
@@ -84,11 +86,11 @@ function convertTiff2Raw {
 	echo "## Convert to RAW (experimental)"
 
 	# Not sure why, but for some reason needed
-	convert multipatch.tiff -flip multipatch_final.tiff
+	convert multipatch.$INTERMEDIATE_GRAPHICS_FORMAT -flip multipatch_final.$INTERMEDIATE_GRAPHICS_FORMAT
 
 	# Convert TIFF to RAW heightmap
 	#     Credits: https://alastaira.wordpress.com/2013/11/12/importing-dem-terrain-heightmaps-for-unity-using-gdal/
-	gdal_translate -ot UInt16 -of ENVI -outsize 2049 2049 -scale multipatch_final.tiff heightmap.raw
+	gdal_translate -ot UInt16 -of ENVI -outsize 2049 2049 -scale multipatch_final.$INTERMEDIATE_GRAPHICS_FORMAT heightmap.raw
 	cd ..
 }
 
