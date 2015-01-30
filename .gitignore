@@ -1,8 +1,9 @@
 # Output data
 asc/*
-out/*
+out*/*
 textures/*
 zips/*
+*~
 
 ####
 ## Default Python from GitHub (until end)
