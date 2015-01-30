@@ -8,6 +8,9 @@ from PyQt4.QtCore import QSize
 
 from qgis.core import *
 
+from convert_coordinates import getNext
+from get_size import getSize
+
 def getLayer(path, name):
 	print "Load ", name
 	ret = QgsRasterLayer(path, name)
@@ -59,10 +62,11 @@ def renderLayers(size, layers, imageFileName):
 
 def load_layers():
 	ascFolder = os.getcwd() + "/asc/"
-	files = os.listdir(ascFolder)
-	for fileName in files:
-		if fileName.endswith(".asc"):
-			getLayer(ascFolder + fileName, fileName)
+	x, (n, m) = getNext()
+	for i in range(getSize() * getSize()):
+		fileName = str(x[0]) + "_" + str(x[1]) + "_DOM.asc"
+		getLayer(ascFolder + fileName, fileName)
+		x, (n, m) = getNext(x, (n, m))
 
 if __name__ == "__main__":
 
