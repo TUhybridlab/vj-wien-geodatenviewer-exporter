@@ -94,6 +94,15 @@ function convertTiff2Raw {
 	cd ..
 }
 
+# Get parameters
+echo -n "Enter Start Major [12 .. 59] and press [ENTER]: "
+read __VJ_START_MAJOR__
+export __VJ_START_MAJOR__
+
+echo -n "Enter Start Minor [1, 2] and press [ENTER]: "
+read __VJ_START_MINOR__
+export __VJ_START_MINOR__
+
 ## Main
 if [[ $0 != "bash" ]]
 then

@@ -1,7 +1,9 @@
 from get_size import getSize
+import os
 
-start_major=24
-start_minor=1
+# Fetch parameters from environment
+start_major = int(os.environ['__VJ_START_MAJOR__'])
+start_minor = int(os.environ['__VJ_START_MINOR__'])
 
 # Specific do internet data
 LINE_SHIFT=10
