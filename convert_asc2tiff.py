@@ -70,7 +70,7 @@ def load_layers():
 
 if __name__ == "__main__":
 
-	outputImageName="multipatch." + str(os.environ['INTERMEDIATE_GRAPHICS_FORMAT'])
+	outputImageName="multipatch." + str(os.environ['__VJ_INTERMEDIATE_GRAPHICS_FORMAT__'])
 
 	print "initQgis"
 	qgishome = "/usr"

@@ -1,13 +1,7 @@
 #!/bin/bash
 
 ## Parameters
-export INTERMEDIATE_GRAPHICS_FORMAT="tiff"
-
-## Python generated parameters.
-#  See the files for the respective values
-export COORDINATES=`python convert_coordinates.py`
-export SIZE=`python get_size.py`
-
+export __VJ_INTERMEDIATE_GRAPHICS_FORMAT__="tiff"
 
 ## Download files
 function downloadFiles() {
@@ -59,7 +53,7 @@ function scaleComposeTextures() {
 
 	for i in $COORDINATES
 	do
-		SCALED_IMAGE_NAME=$i"_scaled."$INTERMEDIATE_GRAPHICS_FORMAT
+		SCALED_IMAGE_NAME=$i"_scaled."$__VJ_INTERMEDIATE_GRAPHICS_FORMAT__
 		if [ -f $SCALED_IMAGE_NAME ]
 		then
 			echo $i": scaling texture already there, not scaling."
@@ -75,8 +69,8 @@ function scaleComposeTextures() {
 	cd textures
 	echo "## Compose texture (i.e. orthofoto)"
 	echo $PATCHES
-	montage $PATCHES -geometry +0+0 -tile $SIZEx$SIZE ./texture_composed.$INTERMEDIATE_GRAPHICS_FORMAT
-	convert ./texture_composed.$INTERMEDIATE_GRAPHICS_FORMAT -resize 2048x2048 ../out/texture_scaled.tiff
+	montage $PATCHES -geometry +0+0 -tile $__VJ_SIZE__x$__VJ_SIZE__ ./texture_composed.$__VJ_INTERMEDIATE_GRAPHICS_FORMAT__
+	convert ./texture_composed.$__VJ_INTERMEDIATE_GRAPHICS_FORMAT__ -resize 2048x2048 ../out/texture_scaled.tiff
 	cd ..
 }
 
@@ -86,11 +80,11 @@ function convertTiff2Raw {
 	echo "## Convert to RAW (experimental)"
 
 	# Not sure why, but for some reason needed
-	convert multipatch.$INTERMEDIATE_GRAPHICS_FORMAT -flip multipatch_final.$INTERMEDIATE_GRAPHICS_FORMAT
+	convert multipatch.$__VJ_INTERMEDIATE_GRAPHICS_FORMAT__ -flip multipatch_final.$__VJ_INTERMEDIATE_GRAPHICS_FORMAT__
 
 	# Convert TIFF to RAW heightmap
 	#     Credits: https://alastaira.wordpress.com/2013/11/12/importing-dem-terrain-heightmaps-for-unity-using-gdal/
-	gdal_translate -ot UInt16 -of ENVI -outsize 2049 2049 -scale multipatch_final.$INTERMEDIATE_GRAPHICS_FORMAT heightmap.raw
+	gdal_translate -ot UInt16 -of ENVI -outsize 2049 2049 -scale multipatch_final.$__VJ_INTERMEDIATE_GRAPHICS_FORMAT__ heightmap.raw
 	cd ..
 }
 
@@ -102,6 +96,13 @@ export __VJ_START_MAJOR__
 echo -n "Enter Start Minor [1, 2] and press [ENTER]: "
 read __VJ_START_MINOR__
 export __VJ_START_MINOR__
+
+echo -n "Enter Size (length of a side of a square, where upper left section is ("$__VJ_START_MAJOR__", "$__VJ_START_MINOR__")) [ int ] and press [ENTER]: "
+read __VJ_SIZE__
+export __VJ_SIZE__
+
+## Python: generated with parameters above
+COORDINATES=`python convert_coordinates.py`
 
 ## Main
 if [[ $0 != "bash" ]]
