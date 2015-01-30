@@ -4,8 +4,8 @@
     <rasterrenderer gradient="BlackToWhite" opacity="1" alphaBand="-1" type="singlebandgray" grayBand="1">
       <rasterTransparency/>
       <contrastEnhancement>
-        <minValue>-1</minValue>
-        <maxValue>99</maxValue>
+        <minValue>-10</minValue>
+        <maxValue>400</maxValue>
         <algorithm>StretchToMinimumMaximum</algorithm>
       </contrastEnhancement>
     </rasterrenderer>
