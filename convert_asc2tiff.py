@@ -62,11 +62,11 @@ def renderLayers(size, layers, imageFileName):
 
 def load_layers():
 	ascFolder = os.getcwd() + "/asc/"
-	x, (n, m) = getNext()
+	x, n = getNext()
 	for i in range(getSize() * getSize()):
 		fileName = str(x[0]) + "_" + str(x[1]) + "_DOM.asc"
 		getLayer(ascFolder + fileName, fileName)
-		x, (n, m) = getNext(x, (n, m))
+		x, n = getNext(x, n)
 
 if __name__ == "__main__":
 

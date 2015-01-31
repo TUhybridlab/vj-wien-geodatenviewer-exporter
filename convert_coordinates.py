@@ -11,32 +11,40 @@ start_minor = int(os.environ['__VJ_START_MINOR__'])
 # Specific do internet data
 LINE_SHIFT=10
 
-def getNext((major, minor) = (None, None), (n, m) = (0, 0)):
+def getNext((major, minor) = (None, None), n = 0):
 	if (major is None):
-		return (start_major, start_minor), (0, 0)
+		return (start_major, start_minor), 0
 	# End of Line
 	if not (n < getSize() - 1):
 		# Next line is low Minors
-		if not (m < 1):
-			return (major + LINE_SHIFT - (getSize() - 1) / 2, start_minor), (0, 0)
+		if minor > 2:
+			if (start_minor < 3):
+				return (major + LINE_SHIFT - n / 2,  start_minor), 0
+			else:
+				return (major + LINE_SHIFT - n / 2,  (start_minor % 3) + 1), 0
 		# Next line is high Minors
 		else:
-			return (major - n/2, 3), (0, m + 1)
+			if (start_minor < 3):
+				return (major - n/2, start_minor + 2), 0
+			else:
+				return (major - n/2, start_minor), 0
 
 	# Normal case
 	n += 1
 	# Odd Minors
 	if (minor % 2 == 1):
-		return (major, minor + 1), (n, m)
+		return (major, minor + 1), n
 	# Even Minors
 	if (minor % 2 == 0):
-		return (major + 1, minor - 1), (n, m)
+		return (major + 1, minor - 1), n
 
 if __name__ == "__main__":
 
 	size=getSize()
 
-	x, (n, m) = getNext()
+	x, n = getNext()
 	for i in range(size * size):
-		print str(x[0]) + "_" + str(x[1])
-		x, (n, m) = getNext(x, (n, m))
+		if (n == 0):
+			print
+		print str(x[0]) + "_" + str(x[1]),
+		x, n = getNext(x, n)
