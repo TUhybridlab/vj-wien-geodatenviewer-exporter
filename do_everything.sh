@@ -105,7 +105,7 @@ export __VJ_SIZE__
 COORDINATES=`python convert_coordinates.py`
 
 ## Main
-if [[ $0 != "bash" ]]
+if [[ $0 != "bash" && $0 != "-bash" ]]
 then
 	# Clean up
 	rm -rf out
