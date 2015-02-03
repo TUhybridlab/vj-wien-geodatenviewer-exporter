@@ -3,10 +3,11 @@
 
 import os
 
-size = start_minor = int(os.environ['__VJ_SIZE__'])
+sizeX = int(os.environ['__VJ_SIZE_X__'])
+sizeY = int(os.environ['__VJ_SIZE_Y__'])
 
 def getSize():
-	return size
+	return sizeX, sizeY
 
 if __name__ == "__main__":
 	print getSize()

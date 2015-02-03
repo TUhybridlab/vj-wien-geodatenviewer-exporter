@@ -3,10 +3,10 @@
 
 import os
 
-from PyQt4.QtGui import QImage, QPainter, QColor
 from PyQt4.QtCore import QSize
+from PyQt4.QtGui import QImage, QPainter, QColor
 
-from qgis.core import *
+from qgis.core import QgsMapLayerRegistry, QgsRasterLayer, QgsRectangle, QgsApplication, QgsMapRenderer
 
 from convert_coordinates import getNext
 from get_size import getSize
@@ -23,9 +23,11 @@ def getLayer(path, name):
 	return ret
 
 def renderLayers(size, layers, imageFileName):
-	# create image
-	img = QImage(size, QImage.Format_RGB32)
 
+	imgSize = QSize(size, size)
+
+	# create image
+	img = QImage(imgSize, QImage.Format_RGB32)
 
 	# set image's background color
 	color = QColor(255,255,255)
@@ -63,7 +65,7 @@ def renderLayers(size, layers, imageFileName):
 def load_layers():
 	ascFolder = os.getcwd() + "/asc/"
 	x, n = getNext()
-	for i in range(getSize() * getSize()):
+	for i in range(getSize()[0] * getSize()[1]):
 		fileName = str(x[0]) + "_" + str(x[1]) + "_DOM.asc"
 		getLayer(ascFolder + fileName, fileName)
 		x, n = getNext(x, n)
@@ -76,6 +78,7 @@ if __name__ == "__main__":
 	qgishome = "/usr"
 	QgsApplication.setPrefixPath(qgishome, True)
 	QgsApplication.initQgis()
+	print QgsApplication.showSettings()
 
 	print "    ...Done"
 
@@ -88,7 +91,9 @@ if __name__ == "__main__":
 	print "    ...Done"
 
 	# Render all loaded layers (works with project files to)
-	renderLayers(QSize(2049,2049), QgsMapLayerRegistry.instance().mapLayers(), "./out/"+outputImageName)
+	resolution = os.environ["__VJ_RESOLUTION_HEIGHTMAP__"]
+
+	renderLayers(int(resolution), QgsMapLayerRegistry.instance().mapLayers(), "./out/"+outputImageName)
 
 	print "exit"
 	QgsApplication.exitQgis()

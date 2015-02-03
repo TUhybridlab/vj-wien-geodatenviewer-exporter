@@ -2,6 +2,9 @@
 
 ## Parameters
 export __VJ_INTERMEDIATE_GRAPHICS_FORMAT__="tiff"
+export __VJ_RESOLUTION_TEXTURE__="2048x2048"
+export __VJ_RESOLUTION_HEIGHTMAP__="2049"
+export __VJ_GRAVITY_SOUTH_THRESHOLD__="32"
 
 ## Download files
 function downloadFiles() {
@@ -54,14 +57,34 @@ function scaleComposeTextures() {
 	for i in $COORDINATES
 	do
 		SCALED_IMAGE_NAME=$i"_scaled."$__VJ_INTERMEDIATE_GRAPHICS_FORMAT__
-		if [ -f $SCALED_IMAGE_NAME ]
+		SOURCE_IMAGE_NAME=$i"_op.jpg"
+
+
+		if [ -f $SOURCE_IMAGE_NAME ]
 		then
-			echo $i": scaling texture already there, not scaling."
+
+			if [ -f $SCALED_IMAGE_NAME ]
+			then
+				echo $i": scaled texture already there, not scaling."
+			else
+				GRAVITY=""
+				if [ `echo $i | cut -d"_" -f 1` -lt $__VJ_GRAVITY_SOUTH_THRESHOLD__ ]
+				then
+					GRAVITY="South"
+				else
+					GRAVITY="North"
+				fi
+				echo $i": scaling down."
+				convert -limit thread 2 $SOURCE_IMAGE_NAME -gravity $GRAVITY -resize $__VJ_RESOLUTION_TEXTURE__ $SCALED_IMAGE_NAME
+			fi
+
+			PATCHES=$PATCHES" "$SCALED_IMAGE_NAME
+
 		else
-			echo $i": scaling down."
-			convert -limit thread 2 $i"_op.jpg" -resize 2048x2048 $SCALED_IMAGE_NAME
+			echo "Adding empty patch"
+			PATCHES=$PATCHES" "../empty.tiff
 		fi
-		PATCHES=$PATCHES" "$SCALED_IMAGE_NAME
+
 	done
 	cd ..
 
@@ -69,8 +92,11 @@ function scaleComposeTextures() {
 	cd textures
 	echo "## Compose texture (i.e. orthofoto)"
 	echo $PATCHES
-	montage $PATCHES -geometry +0+0 -tile $__VJ_SIZE__x$__VJ_SIZE__ ./texture_composed.$__VJ_INTERMEDIATE_GRAPHICS_FORMAT__
-	convert ./texture_composed.$__VJ_INTERMEDIATE_GRAPHICS_FORMAT__ -resize 2048x2048 ../out/texture_scaled.tiff
+
+	montage $PATCHES -geometry $__VJ_RESOLUTION_TEXTURE__+0+0 -tile $__VJ_SIZE_Y__x$__VJ_SIZE_X__ ./texture_composed.$__VJ_INTERMEDIATE_GRAPHICS_FORMAT__
+
+	# TODO: Somehow unify Texture and heightmap resolution / aspect ratio - trim is not enough
+	convert ./texture_composed.$__VJ_INTERMEDIATE_GRAPHICS_FORMAT__ -resize $__VJ_RESOLUTION_TEXTURE__ -trim ../out/texture_scaled.tiff
 	cd ..
 }
 
@@ -80,29 +106,47 @@ function convertTiff2Raw {
 	echo "## Convert to RAW (experimental)"
 
 	# Not sure why, but for some reason needed
-	convert multipatch.$__VJ_INTERMEDIATE_GRAPHICS_FORMAT__ -flip multipatch_final.$__VJ_INTERMEDIATE_GRAPHICS_FORMAT__
+	convert multipatch.$__VJ_INTERMEDIATE_GRAPHICS_FORMAT__ -flip -trim multipatch_final.$__VJ_INTERMEDIATE_GRAPHICS_FORMAT__
 
 	# Convert TIFF to RAW heightmap
 	#     Credits: https://alastaira.wordpress.com/2013/11/12/importing-dem-terrain-heightmaps-for-unity-using-gdal/
-	gdal_translate -ot UInt16 -of ENVI -outsize 2049 2049 -scale multipatch_final.$__VJ_INTERMEDIATE_GRAPHICS_FORMAT__ heightmap.raw
+	gdal_translate -ot UInt16 -of ENVI -scale multipatch_final.$__VJ_INTERMEDIATE_GRAPHICS_FORMAT__ heightmap.raw
 	cd ..
 }
 
-# Get parameters
-echo -n "Enter Start Major [12 .. 59] and press [ENTER]: "
-read __VJ_START_MAJOR__
-export __VJ_START_MAJOR__
+function getParameters() {
+	# Get parameters
+	echo -n "Enter Start Major [12 .. 59] and press [ENTER]: "
+	read __VJ_START_MAJOR__
+	export __VJ_START_MAJOR__
 
-echo -n "Enter Start Minor [1, 2] and press [ENTER]: "
-read __VJ_START_MINOR__
-export __VJ_START_MINOR__
+	echo -n "Enter Start Minor [1, 2] and press [ENTER]: "
+	read __VJ_START_MINOR__
+	export __VJ_START_MINOR__
 
-echo -n "Enter Size (length of a side of a square, where upper left section is ("$__VJ_START_MAJOR__", "$__VJ_START_MINOR__")) [ int ] and press [ENTER]: "
-read __VJ_SIZE__
-export __VJ_SIZE__
+	echo -n "Enter X-Size and press [ENTER]: "
+	read __VJ_SIZE_X__
+	export __VJ_SIZE_X__
+
+	echo -n "Enter Y-Size and press [ENTER]: "
+	read __VJ_SIZE_Y__
+	export __VJ_SIZE_Y__
+
+	if [ $OSTYPE == "cygwin" ]
+	then
+		echo "Running in cygwin, setting PYTHONPATH"
+		export PYTHONPATH=:/qgis/apps/qgis/python
+		export PYTHONPATH=$PYTHONPATH:/qgis/apps/Python27/Lib/site-packages
+		export QGIS_PREFIX_PATH=/gqis/apps/gqis
+	fi
+}
 
 ## Python: generated with parameters above
 COORDINATES=`python convert_coordinates.py`
+
+echo $0
+
+getParameters
 
 ## Main
 if [[ $0 != "bash" && $0 != "-bash" ]]

@@ -15,7 +15,7 @@ def getNext((major, minor) = (None, None), n = 0):
 	if (major is None):
 		return (start_major, start_minor), 0
 	# End of Line
-	if not (n < getSize() - 1):
+	if not (n < getSize()[0] - 1):
 		# Next line is low Minors
 		if minor > 2:
 			if (start_minor < 3):
@@ -43,7 +43,7 @@ if __name__ == "__main__":
 	size=getSize()
 
 	x, n = getNext()
-	for i in range(size * size):
+	for i in range(size[0] * size[1]):
 		if (n == 0):
 			print
 		print str(x[0]) + "_" + str(x[1]),
