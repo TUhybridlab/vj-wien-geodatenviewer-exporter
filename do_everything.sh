@@ -96,7 +96,7 @@ function scaleComposeTextures() {
 	montage $PATCHES -geometry $__VJ_RESOLUTION_TEXTURE__+0+0 -tile $__VJ_SIZE_Y__x$__VJ_SIZE_X__ ./texture_composed.$__VJ_INTERMEDIATE_GRAPHICS_FORMAT__
 
 	# TODO: Somehow unify Texture and heightmap resolution / aspect ratio - trim is not enough
-	convert ./texture_composed.$__VJ_INTERMEDIATE_GRAPHICS_FORMAT__ -resize $__VJ_RESOLUTION_TEXTURE__ -trim ../out/texture_scaled.tiff
+	convert ./texture_composed.$__VJ_INTERMEDIATE_GRAPHICS_FORMAT__ -resize $__VJ_RESOLUTION_TEXTURE__ -trim ../out/texture_$1.tiff
 	cd ..
 }
 
@@ -113,7 +113,7 @@ function convertTiff2Raw {
 
 	# Convert TIFF to RAW heightmap
 	#     Credits: https://alastaira.wordpress.com/2013/11/12/importing-dem-terrain-heightmaps-for-unity-using-gdal/
-	gdal_translate -ot UInt16 -of ENVI -scale multipatch_final.$__VJ_INTERMEDIATE_GRAPHICS_FORMAT__ heightmap.raw
+	gdal_translate -ot UInt16 -of ENVI -scale multipatch_final.$__VJ_INTERMEDIATE_GRAPHICS_FORMAT__ heightmap_$1.raw
 	cd ..
 }
 
@@ -196,9 +196,9 @@ mkdir -p textures
 ## Main
 if [[ $0 != "bash" && $0 != "-bash" ]]
 then
-	for i in `seq 6`
+	for j in `seq 6`
 	do
-		getParametersForRegion $i
+		getParametersForRegion $j
 		## Python: generated with parameters above
 		COORDINATES=`python convert_coordinates.py`
 
@@ -212,14 +212,14 @@ then
 
 		unzipFiles
 
-		scaleComposeTextures
+		scaleComposeTextures $j
 
 		## Convert and compose meshes
 		echo "## Converting and composing mesh"
 		./convert_asc2tiff.py
 
-		convertTiff2Raw
+		convertTiff2Raw $j
 
-		mv out "out_"$i
+		mv out "out_"$j
 	done
 fi
