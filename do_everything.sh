@@ -230,6 +230,11 @@ then
 		RESOLUTION=$RESOLUTION"x"`exiv2 -pt out/multipatch.$__VJ_INTERMEDIATE_GRAPHICS_FORMAT__ | grep ImageLength | rev | cut -f 1 -d" " | rev`
 		touch out/$RESOLUTION
 
+		#Clean up
+		rm out/multipatch.$__VJ_INTERMEDIATE_GRAPHICS_FORMAT__
+		rm out/*.hdr
+		rm out/*.xml
+
 		mv out "out_"$j
 	done
 fi
