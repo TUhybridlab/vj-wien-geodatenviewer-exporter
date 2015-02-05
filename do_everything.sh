@@ -70,9 +70,9 @@ function scaleComposeTextures() {
 				GRAVITY=""
 				if [ `echo $i | cut -d"_" -f 1` -lt $__VJ_GRAVITY_SOUTH_THRESHOLD__ ]
 				then
-					GRAVITY="South"
+					GRAVITY="SouthEast"
 				else
-					GRAVITY="North"
+					GRAVITY="NorthEast"
 				fi
 				echo $i": scaling down."
 				convert -limit thread 2 $SOURCE_IMAGE_NAME -gravity $GRAVITY -resize 12.5% -extent $__VJ_RESOLUTION_TEXTURE__+0+0 $SCALED_IMAGE_NAME
@@ -117,6 +117,44 @@ function convertTiff2Raw {
 	cd ..
 }
 
+function getParametersForRegion() {
+	case $1 in
+		1 ) export __VJ_START_MAJOR__=23
+			export __VJ_START_MINOR__=3
+			export __VJ_SIZE_X__=4
+			export __VJ_SIZE_Y__=6
+			;;
+		2 ) export __VJ_START_MAJOR__=35
+			export __VJ_START_MINOR__=1
+			export __VJ_SIZE_X__=2
+			export __VJ_SIZE_Y__=2
+			;;
+		3 ) export __VJ_START_MAJOR__=36
+			export __VJ_START_MINOR__=1
+			export __VJ_SIZE_X__=2
+			export __VJ_SIZE_Y__=2
+			;;
+		4 ) export __VJ_START_MAJOR__=45
+			export __VJ_START_MINOR__=1
+			export __VJ_SIZE_X__=4
+			export __VJ_SIZE_Y__=3
+			;;
+		## Last 2 change from red/yellow region
+		5 ) export __VJ_START_MAJOR__=25
+			export __VJ_START_MINOR__=1
+			export __VJ_SIZE_X__=5
+			export __VJ_SIZE_Y__=2
+			;;
+		6 ) export __VJ_START_MAJOR__=37
+			export __VJ_START_MINOR__=1
+			export __VJ_SIZE_X__=2
+			export __VJ_SIZE_Y__=4
+			;;
+	esac
+
+	echo "Running with: "$__VJ_START_MAJOR__"/"$__VJ_START_MINOR__" - size: "$__VJ_SIZE_X__"x"$__VJ_SIZE_Y__
+}
+
 function getParameters() {
 	# Get parameters
 	echo -n "Enter Start Major [12 .. 59] and press [ENTER]: "
@@ -144,34 +182,44 @@ function getParameters() {
 	fi
 }
 
-getParameters
+#getParameters
 
 ## Python: generated with parameters above
-COORDINATES=`python convert_coordinates.py`
+#COORDINATES=`python convert_coordinates.py`
 
 echo $0
+
+mkdir -p zips
+mkdir -p asc
+mkdir -p textures
 
 ## Main
 if [[ $0 != "bash" && $0 != "-bash" ]]
 then
-	# Clean up
-	rm -rf out
+	for i in `seq 6`
+	do
+		getParametersForRegion $i
+		## Python: generated with parameters above
+		COORDINATES=`python convert_coordinates.py`
 
-	# Create directories
-	mkdir -p zips
-	mkdir -p asc
-	mkdir -p textures
-	mkdir -p out
+		# Clean up
+		rm -rf out
 
-	downloadFiles
+		# Create directories
+		mkdir -p out
 
-	unzipFiles
+		downloadFiles
 
-	scaleComposeTextures
+		unzipFiles
 
-	## Convert and compose meshes
-	echo "## Converting and composing mesh"
-	./convert_asc2tiff.py
+		scaleComposeTextures
 
-	convertTiff2Raw
+		## Convert and compose meshes
+		echo "## Converting and composing mesh"
+		./convert_asc2tiff.py
+
+		convertTiff2Raw
+
+		mv out "out_"$i
+	done
 fi
