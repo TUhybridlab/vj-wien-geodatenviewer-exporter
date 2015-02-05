@@ -225,6 +225,11 @@ then
 
 		convertTiff2Raw $j
 
+		# Create file carring the resolution
+		RESOLUTION=`exiv2 -pt out/multipatch.$__VJ_INTERMEDIATE_GRAPHICS_FORMAT__ | grep ImageWidth | rev | cut -f 1 -d" " | rev`
+		RESOLUTION=$RESOLUTION"x"`exiv2 -pt out/multipatch.$__VJ_INTERMEDIATE_GRAPHICS_FORMAT__ | grep ImageLength | rev | cut -f 1 -d" " | rev`
+		touch out/$RESOLUTION
+
 		mv out "out_"$j
 	done
 fi
