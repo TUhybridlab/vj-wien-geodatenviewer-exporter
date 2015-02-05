@@ -144,12 +144,12 @@ function getParameters() {
 	fi
 }
 
+getParameters
+
 ## Python: generated with parameters above
 COORDINATES=`python convert_coordinates.py`
 
 echo $0
-
-getParameters
 
 ## Main
 if [[ $0 != "bash" && $0 != "-bash" ]]
