@@ -1,5 +1,5 @@
 # wien-geodatenviewer-exporter
-A scriptset allowing download and conversion of data from https://www.wien.gv.at/ma41datenviewer/public/start.aspx
+A scriptset allowing download and conversion of data from https://www.wien.gv.at/ma41datenviewer/public/start.aspx, which can then be used in Unity3D as a Terrain Object.
 
 # Requirements
 
@@ -10,7 +10,7 @@ A scriptset allowing download and conversion of data from https://www.wien.gv.at
 * wget
 * python2.7
 * pyqt4
-* qgis, python-qgis >= 2.6
+* qgis, python-qgis >= 2.6 - For Ubuntu see [here](http://qgis.org/en/site/forusers/alldownloads.html#on-plain-ubuntu) and then [here](http://qgis.org/en/site/forusers/alldownloads.html#ubuntu)
 * gdal_translate
 * exiv2
 
