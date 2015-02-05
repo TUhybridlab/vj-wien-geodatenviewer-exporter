@@ -105,6 +105,9 @@ function convertTiff2Raw {
 	cd out
 	echo "## Convert to RAW (experimental)"
 
+	# Replace white (no data) with black (bottom)
+	convert multipatch.$__VJ_INTERMEDIATE_GRAPHICS_FORMAT__ -fill black -opaque white multipatch.$__VJ_INTERMEDIATE_GRAPHICS_FORMAT__
+
 	# Not sure why, but for some reason needed
 	convert multipatch.$__VJ_INTERMEDIATE_GRAPHICS_FORMAT__ -flip -trim multipatch_final.$__VJ_INTERMEDIATE_GRAPHICS_FORMAT__
 
