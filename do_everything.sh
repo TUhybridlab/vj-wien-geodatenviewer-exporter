@@ -75,7 +75,7 @@ function scaleComposeTextures() {
 					GRAVITY="North"
 				fi
 				echo $i": scaling down."
-				convert -limit thread 2 $SOURCE_IMAGE_NAME -gravity $GRAVITY -resize $__VJ_RESOLUTION_TEXTURE__ $SCALED_IMAGE_NAME
+				convert -limit thread 2 $SOURCE_IMAGE_NAME -gravity $GRAVITY -resize 12.5% -extent $__VJ_RESOLUTION_TEXTURE__+0+0 $SCALED_IMAGE_NAME
 			fi
 
 			PATCHES=$PATCHES" "$SCALED_IMAGE_NAME
