@@ -197,6 +197,10 @@ mkdir -p textures
 ## Main
 if [[ $0 != "bash" && $0 != "-bash" ]]
 then
+
+	rm -rf out
+	rm -rf out_*
+
 	for j in `seq 6`
 	do
 		getParametersForRegion $j
@@ -204,7 +208,7 @@ then
 		COORDINATES=`python convert_coordinates.py`
 
 		# Clean up
-		rm -rf out
+		rm -rf out_$j
 
 		# Create directories
 		mkdir -p out
