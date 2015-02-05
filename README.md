@@ -33,3 +33,15 @@ If you use "meters" as default unit in Unity use the following import settings:
 | 4    | 10000 x 410 x 7500  |
 | 5    | 12500 x 410 x 5000  |
 | 6    | 5000 x 410 x 10000  |
+
+# Region Map
+
+Implemented: **Red** regions
+
+![Region map](https://github.com/j-be/wien-geodatenviewer-exporter/blob/master/region_map.png)
+
+## Legend
+
+* green: all full width and full height tiles
+* red: current implementation status
+* yellow: estimate for next implementation
