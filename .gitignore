@@ -1,8 +1,12 @@
 # Output data
 asc/*
-out*/*
+out_?/*
 textures/*
 zips/*
+
+output/*
+output.zip
+
 *~
 
 ####
