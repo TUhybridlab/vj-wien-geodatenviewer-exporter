@@ -3,7 +3,7 @@
 ## Parameters
 export __VJ_INTERMEDIATE_GRAPHICS_FORMAT__="tiff"
 export __VJ_RESOLUTION_TEXTURE__="2048x2048"
-export __VJ_RESOLUTION_HEIGHTMAP__="2048"
+export __VJ_RESOLUTION_HEIGHTMAP__="2049"
 export __VJ_GRAVITY_SOUTH_THRESHOLD__="32"
 
 ## Download files
@@ -110,7 +110,7 @@ function convertTiff2Raw {
 
 	# Not sure why, but for some reason needed
 	convert multipatch.$__VJ_INTERMEDIATE_GRAPHICS_FORMAT__ -flip -trim multipatch.$__VJ_INTERMEDIATE_GRAPHICS_FORMAT__
-	convert multipatch.$__VJ_INTERMEDIATE_GRAPHICS_FORMAT__ -background black -splice 1x1  multipatch.$__VJ_INTERMEDIATE_GRAPHICS_FORMAT__
+	convert multipatch.$__VJ_INTERMEDIATE_GRAPHICS_FORMAT__ -resize $__VJ_RESOLUTION_HEIGHTMAP__"x"$__VJ_RESOLUTION_HEIGHTMAP__\! +repage multipatch.$__VJ_INTERMEDIATE_GRAPHICS_FORMAT__
 
 	# Convert TIFF to RAW heightmap
 	#     Credits: https://alastaira.wordpress.com/2013/11/12/importing-dem-terrain-heightmaps-for-unity-using-gdal/
